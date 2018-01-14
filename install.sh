@@ -8,9 +8,8 @@ then
   if [[ "$user" == "root" ]];
   then
     apt-get update
-    apt-get install -y wget ffmpeg head
+    apt-get install -y wget ffmpeg youtube-dl
     echo -e "[*]Installing to filesystem[*]"
-    mkdir ~/youdown
     chmod +x youdown
     mv youdown /usr/bin
     clear
@@ -18,9 +17,8 @@ then
     exit
   else
     sudo apt-get update
-    sudo apt-get install -y wget ffmpeg head
+    sudo apt-get install -y wget ffmpeg  youtube-dl
     echo -e "[*]Installing to filesystem[*]"
-    mkdir ~/youdown
     chmod +x youdown
     sudo mv youdown /usr/bin
     clear

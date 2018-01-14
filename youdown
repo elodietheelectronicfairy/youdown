@@ -5,7 +5,7 @@ echo -e "Welcome to:"
 echo -e "\n \ \ / /__ _  _|   \ _____ __ ___ _  \n  \ V / _ \ || | |) / _ \ V  V / ' \ \n   | |\   /\ , |   /\   /\ /\ /| || |\n"
 echo -e "A program by Elodie Tscharke \\n \\n"
 echo -e "Main menu:"
-echo -e "\\n1. Download a video \\n2. Convert a video to mp4 (from flv) \\n0. Exit"
+echo -e "\\n1. Download a video \\n0. Exit"
 printf ": "
 read main
 if [[ "$main" == "0" ]];
@@ -13,90 +13,28 @@ then
   exit
 fi
 
-if [[ "$main" == "1"]];
+if [[ "$main" == "1" ]];
 then
   clear
-  echo -e "Enter name of the output file you want (do NOT include file extensions)"
-  printf ": "
-  read name
-  echo -e "Enter url to youtube video"
+  echo -e "Enter the part of the url that comes after https://www.youtube.com/watch?v= e.g. dQw4w9WgXcQ"
   printf ": "
   read yt
+  clear
+  echo -e "Enter name of desired output file (do NOT include file extensions and do NOT include ANY spaces) format will be {yourfilenamehere}.mp4"
+  printf ": "
+  read name
   echo -e "If you get any errors then either your connection isn't working or you entered a bad url \\n \\n \\n \\n \\n"
   echo -e "[*]Fetching url ...[*] \\n \\n"
-  wget -O /tmp/paage.tmp ${yt}
-  head -1 /tmp/paage.tmp=({vid})
-  echo -e "\\\n \\n \\n[*]Downloading video ...[*]\\n \\n"
-  wget -0 ~/youdown/${name}.flv '${vid}'
-  echo -e "Do you want to convert the video to mp4 (from flv)? (type either y {for yes} or any other key {for no} and press [enter])"
-  printf ": "
-  read conv
-  if [[ "$conv" == "y" ]];
-  then
-    converted="y"
-    echo -e "[*]Converting ...[*]"
-    ffmpeg -i ~/youname/${name}.flv -c:v libx264 -crf 20 -c:a libfaac -q:a 100 ~/youname/${name}.mp4
-  else
-    echo -e "[*]Skipping Conversion[*]"
-  fi
-  echo -e "\\n \\n \\n[*]Cleaning up ...[*] \\n \\n"
-  if [[ "$user" == "root" ]];
-  then
-    rm /tmp/paage.tmp
-    if [[ "$converted" == "y" ]];
-    then
-      rm ~/youname/${name}.flv
-      echo -e "\\n \\n \\n[*]Done[*] \\n \\n"
-      printf "Hit [enter] to continue - "
-      read whogivesashit
-      youdown
-    else
-      echo -e "\\n \\n \\n[*]Done[*] \\n \\n"
-      printf "Hit [enter] to continue - "
-      read whogivesashit
-      youdown
-    fi
-  else
-    sudo rm /tmp/paage.tmp
-    if [[ "$converted" == "y" ]];
-    then
-      sudo rm ~/youname/${name}.flv
-      echo -e "\\n \\n \\n[*]Done[*] \\n \\n"
-      printf "Hit [enter] to continue - "
-      read whogivesashit
-      youdown
-    else
-      echo -e "\\n \\n \\n[*]Done[*] \\n \\n"
-      printf "Hit [enter] to continue - "
-      read whogivesashit
-      youdown
-    fi
-  fi
+  wget -O paage.tmp https://www.youtube.com/watch?v=${yt}
+  echo -e "\\n \\n \\n[*]Downloading video ...[*]\\n \\n"
+  youtube-dl $yt -f mp4 --hls-use-mpegts --external-downloader wget --id
+  echo -e "\\n \\n \\n[*]Finished Downloading[*]\\n \\n"
+  echo -e "[*]Fixing filenames ...[*] \\n \\n"
+  mv ${yt}.mp4 ${name}.mp4
+  echo -e "\\n \\n \\n[*]Cleaning Up ...[*]\\n \\n"
+  rm paage.tmp
+  echo -e "\\n \\n[*]Done[*]"
+  echo -e "\\n \\n[*]Press [ENTER] to Continue[*]"
+  read whogivesashiteeee
+  youdown
 fi
-
-if [[ "$main" == "2" ]];
-then
-  clear
-  echo -e "Enter full path to .flv video (e.g. ~/Downloads/~~~~.flv): "
-  read path
-  echo -e "Enter the name you want for the output file (do NOT include the file extension): "
-  read name
-  echo -e "[*]Converting[*]"
-  ffmpeg -i $path -c:v libx264 -crf 20 -c:a libfaac -q:a 100 ~/youname/${name}.mp4
-  echo -e "File has been converted and placed in the youname folder in your home directory"
-  echo -e "Do you want the original .flv file to be zdeleleted? (type either y {for yes} or any other key {for no} and press [enter])"
-  printf ": "
-  read delflv
-  if [[ "$delflv" == "y" ]];
-  then
-    rm $path
-    echo -e "\\n \\n \\n[*]Done[*] \\n \\n"
-    printf "Hit [enter] to continue - "
-    read whogivesashit
-    youdown
-  else
-    echo -e "[*]Skipping[*]"
-    echo -e "\\n \\n \\n[*]Done[*] \\n \\n"
-    printf "Hit [enter] to continue - "
-    read whogivesashit
-    youdown
